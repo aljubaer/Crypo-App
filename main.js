@@ -5,6 +5,8 @@ const {
 } = require('electron')
 const shell = require('electron').shell
 const ipc = require('electron').ipcMain
+const {autoUpdater} = require("electron-updater")
+
 
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -22,7 +24,7 @@ function createWindow() {
     win.loadFile('src/index.html')
 
     // Open the DevTools.
-    win.webContents.openDevTools()
+    //win.webContents.openDevTools()
 
     // Emitted when the window is closed.
     win.on('closed', () => {
@@ -66,7 +68,7 @@ function createWindow() {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow)
+//app.on('ready', createWindow)
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
@@ -90,4 +92,18 @@ app.on('activate', () => {
 
 ipc.on('update-notify-value', function(event, arg){
     win.webContents.send('targetPriceVal', arg)
+})
+autoUpdater.on('update-not-available', ()=>{
+    console.log('update not available...')
+});
+// when the update is ready, notify the BrowserWindow
+autoUpdater.on('update-downloaded', (info) => {
+    win.webContents.send('updateReady')
+});
+app.on('ready', function() {
+    createWindow();
+  autoUpdater.checkForUpdates();
+});
+ipc.on("quitAndInstall", (event, arg) => {
+    autoUpdater.quitAndInstall();
 })
