@@ -7,6 +7,7 @@ const ipc = electron.ipcRenderer
 
 
 const notifyBtn = document.getElementById('notifyBtn')
+const contactBtn = document.getElementById('contactBtn')
 var price = document.querySelector('h1')
 var targetPrice = document.getElementById('targetPrice')
 var targetPriceVal
@@ -46,6 +47,21 @@ notifyBtn.addEventListener('click', function (event) {
     win.loadURL(modalPath)
     win.show()
 })
+
+contactBtn.addEventListener('click', function (event) {
+    const modalPath1 = path.join('file://', __dirname, 'message-box.html')
+    let win = new BrowserWindow({
+        frame: false,
+        alwaysOnTop: true,
+        width: 800,
+        height: 500
+    })
+
+    win.loadURL(modalPath1)
+    //win.webContents.openDevTools()
+    win.show()
+})
+
 
 ipc.on('targetPriceVal', function(event, arg){
     targetPriceVal = Number(arg);
